@@ -3,11 +3,10 @@
 # ---------------------------------------------------------------------------- #
 FROM alpine/git:2.43.0 as download
 
-# Download model from HuggingFace using curl with token
-RUN apk add --no-cache curl && \
-    curl -L -H "Authorization: Bearer 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" \
-    -o /model.safetensors \
-    https://huggingface.co/black-forest-labs/FLUX.1-dev/resolve/main/flux1-dev.safetensors
+# Download model from Civitai using wget
+RUN apk add --no-cache wget && \
+    wget -O /model.safetensors \
+    "https://civitai.com/api/download/models/501240?type=Model&format=SafeTensor&size=pruned&fp=fp16"
 
 # ---------------------------------------------------------------------------- #
 #                        Stage 2: Build the final image                        #
