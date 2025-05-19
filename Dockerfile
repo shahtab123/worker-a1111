@@ -3,12 +3,11 @@
 # ---------------------------------------------------------------------------- #
 FROM alpine/git:2.43.0 as download
 
-# Download model from HuggingFace with retry and verbose output
-RUN apk add --no-cache wget && \
-    wget --tries=3 --retry-connrefused --waitretry=5 --timeout=60 --no-check-certificate \
-    -O /model.safetensors \
+# Download model from HuggingFace using curl with token
+RUN apk add --no-cache curl && \
+    curl -L -H "Authorization: Bearer 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" \
+    -o /model.safetensors \
     https://huggingface.co/black-forest-labs/FLUX.1-dev/resolve/main/flux1-dev.safetensors
-
 
 # ---------------------------------------------------------------------------- #
 #                        Stage 2: Build the final image                        #
