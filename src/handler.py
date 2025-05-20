@@ -39,8 +39,41 @@ def run_inference(inference_request):
     """
     Run inference on a request.
     """
-    response = automatic_session.post(url=f'{LOCAL_URL}/txt2img',
-                                      json=inference_request, timeout=600)
+    endpoint = inference_request.get("endpoint", "txt2img")
+    payload = inference_request.get("payload", {})
+    
+    # Handle different API endpoints
+    if endpoint == "txt2img":
+        response = automatic_session.post(
+            url=f'{LOCAL_URL}/txt2img',
+            json=payload,
+            timeout=600
+        )
+    elif endpoint == "img2img":
+        response = automatic_session.post(
+            url=f'{LOCAL_URL}/img2img',
+            json=payload,
+            timeout=600
+        )
+    elif endpoint == "getModels":
+        response = automatic_session.get(
+            url=f'{LOCAL_URL}/sd-models',
+            timeout=600
+        )
+    elif endpoint == "getOptions":
+        response = automatic_session.get(
+            url=f'{LOCAL_URL}/options',
+            timeout=600
+        )
+    elif endpoint == "setOptions":
+        response = automatic_session.post(
+            url=f'{LOCAL_URL}/options',
+            json=payload,
+            timeout=600
+        )
+    else:
+        raise Exception(f"Endpoint '{endpoint}' not implemented")
+    
     return response.json()
 
 
@@ -51,10 +84,7 @@ def handler(event):
     """
     This is the handler function that will be called by the serverless.
     """
-
     json = run_inference(event["input"])
-
-    # return the output that you want to be returned like pre-signed URLs to output artifacts
     return json
 
 
