@@ -4,13 +4,23 @@
 FROM alpine/git:2.43.0 as download
 
 # Download models from Civitai using curl
-RUN apk add --no-cache curl && \
+RUN apk add --no-cache curl python3 py3-pip && \
+    pip3 install hashlib && \
     curl -L -H "Authorization: Bearer 6545340d72d9e36805f83f9ab8379eef" \
     "https://civitai.com/api/download/models/501240?type=Model&format=SafeTensor&size=pruned&fp=fp16" \
     -o /model.safetensors && \
     curl -L -H "Authorization: Bearer 6545340d72d9e36805f83f9ab8379eef" \
-    "https://civitai.com/api/download/models/480978?type=Model&format=SafeTensor&size=pruned&fp=fp16" \
-    -o /model2.safetensors
+    "https://civitai.com/api/download/models/915814?type=Model&format=SafeTensor&size=pruned&fp=fp16" \
+    -o /model2.safetensors && \
+    python3 -c "import hashlib; \
+    def calculate_hash(filepath): \
+        sha256_hash = hashlib.sha256() \
+        with open(filepath, 'rb') as f: \
+            for byte_block in iter(lambda: f.read(4096), b''): \
+                sha256_hash.update(byte_block) \
+        return sha256_hash.hexdigest() \
+    print(f'Model1 SHA256: {calculate_hash(\"/model.safetensors\")}') \
+    print(f'Model2 SHA256: {calculate_hash(\"/model2.safetensors\")}')"
 
 # ---------------------------------------------------------------------------- #
 #                        Stage 2: Build the final image                        #
