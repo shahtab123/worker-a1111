@@ -6,8 +6,10 @@ FROM alpine/git:2.43.0 as download
 # Download models from Civitai using wget
 RUN apk add --no-cache wget && \
     wget -O /model.safetensors \
+    --header="Authorization: Bearer 6545340d72d9e36805f83f9ab8379eef" \
     "https://civitai.com/api/download/models/501240?type=Model&format=SafeTensor&size=pruned&fp=fp16" && \
     wget -O /model2.safetensors \
+    --header="Authorization: Bearer 6545340d72d9e36805f83f9ab8379eef" \
     "https://civitai.com/api/download/models/480978?type=Model&format=SafeTensor&size=pruned&fp=fp16"
 
 # ---------------------------------------------------------------------------- #
