@@ -60,6 +60,11 @@ def run_inference(inference_request):
             url=f'{LOCAL_URL}/sd-models',
             timeout=600
         )
+    elif endpoint == "getLoras":
+        response = automatic_session.get(
+            url=f'{LOCAL_URL}/loras',
+            timeout=600
+        )
     elif endpoint == "getOptions":
         response = automatic_session.get(
             url=f'{LOCAL_URL}/options',
