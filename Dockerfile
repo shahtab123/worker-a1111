@@ -3,10 +3,12 @@
 # ---------------------------------------------------------------------------- #
 FROM alpine/git:2.43.0 as download
 
-# Download model from Civitai using wget
+# Download models from Civitai using wget
 RUN apk add --no-cache wget && \
     wget -O /model.safetensors \
-    "https://civitai.com/api/download/models/501240?type=Model&format=SafeTensor&size=pruned&fp=fp16"
+    "https://civitai.com/api/download/models/501240?type=Model&format=SafeTensor&size=pruned&fp=fp16" && \
+    wget -O /model2.safetensors \
+    "https://civitai.com/api/download/models/480978?type=Model&format=SafeTensor&size=pruned&fp=fp16"
 
 # ---------------------------------------------------------------------------- #
 #                        Stage 2: Build the final image                        #
@@ -43,6 +45,7 @@ RUN mkdir -p ${ROOT}/models/Stable-diffusion && \
 
 # Copy models to correct locations
 COPY --from=download /model.safetensors ${ROOT}/models/Stable-diffusion/
+COPY --from=download /model2.safetensors ${ROOT}/models/Stable-diffusion/
 
 # install dependencies
 COPY requirements.txt .
