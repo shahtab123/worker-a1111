@@ -10,7 +10,10 @@ RUN apk add --no-cache curl && \
     -o /model.safetensors && \
     curl -L -H "Authorization: Bearer 6545340d72d9e36805f83f9ab8379eef" \
     "https://civitai.com/api/download/models/915814?type=Model&format=SafeTensor&size=pruned&fp=fp16" \
-    -o /model2.safetensors
+    -o /model2.safetensors && \
+    curl -L -H "Authorization: Bearer 6545340d72d9e36805f83f9ab8379eef" \
+    "https://civitai.com/api/download/models/804967?type=Model&format=SafeTensor" \
+    -o /hand.safetensors
 
 # ---------------------------------------------------------------------------- #
 #                        Stage 2: Build the final image                        #
@@ -48,6 +51,7 @@ RUN mkdir -p ${ROOT}/models/Stable-diffusion && \
 # Copy models to correct locations
 COPY --from=download /model.safetensors ${ROOT}/models/Stable-diffusion/
 COPY --from=download /model2.safetensors ${ROOT}/models/Stable-diffusion/
+COPY --from=download /hand.safetensors ${ROOT}/models/Lora/
 
 # install dependencies
 COPY requirements.txt .
